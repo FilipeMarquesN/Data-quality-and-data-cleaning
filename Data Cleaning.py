@@ -47,7 +47,7 @@ df['minimum nights'] = df['minimum nights'].fillna(0)
 df['service fee'] = df['service fee'].fillna(0)
 
 #Set missing to False
-df['host_identity_verified'] = df['host_identity_verified'].fillna('False')
+df['host_identity_verified'] = df['host_identity_verified'].fillna('unconfirmed')
 
 #Set Max and Min
 
@@ -67,6 +67,6 @@ df.loc[df['neighbourhood group'] == 'manhatan', 'neighbourhood group'] = 'Manhat
 df.loc[df['neighbourhood group'] == 'brookln', 'neighbourhood group'] = 'Brooklyn'
 
 #Make the pdf with report
-
+df.to_csv('Data_Cleaned.csv', index=False)
 profile = ProfileReport(df, title="Profiling Report")
 profile.to_file("report.html")

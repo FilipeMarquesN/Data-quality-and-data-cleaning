@@ -1,0 +1,48 @@
+---
+title: "Data_View"
+output: html_document
+date: "2024-11-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning=FALSE}
+library(readr)
+Airbnb_Open_Data <- read_csv("Data_Cleaned.csv")
+
+library(dplyr)
+
+
+Airbnb_Open_Data <- Airbnb_Open_Data %>%
+  rename(neighbourhood_group = `neighbourhood group`)
+
+Airbnb_Open_Data <- Airbnb_Open_Data %>%
+  rename(service_fee = `service fee`)
+
+```
+```{r, warning=FALSE}
+library(ggplot2)
+
+
+ggplot(Airbnb_Open_Data, aes(x = neighbourhood_group, y = price, fill = neighbourhood_group)) +
+  geom_boxplot() +
+  labs(title = "Prices by Neighbourhood Group", x = "Neighbourhood Group", y = "Price") +
+  scale_fill_manual(values = c("#377eb8", "#ff7f00", "#4daf4a", "#f781bf", '#a65628')) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") + ylim(0,700)
+
+ggplot(Airbnb_Open_Data, aes(x = neighbourhood_group, y = service_fee, fill = neighbourhood_group)) +
+  geom_boxplot() +
+  labs(title = "Service Fee by Neighbourhood Group", x = "Neighbourhood Group", y = "Service Fee") +
+  scale_fill_manual(values = c("#377eb8", "#ff7f00", "#4daf4a", "#f781bf", '#a65628')) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") + ylim(0,300)
+
+
+ggplot(Airbnb_Open_Data, aes(x = host_identity_verified, y = service_fee, fill = neighbourhood_group)) +
+  geom_boxplot() +
+  labs(title = "Service Fee by Host identity verified", x = "host identity verified", y = "Service Fee") +
+  scale_fill_manual(values = c("#377eb8", "#ff7f00", "#4daf4a", "#f781bf", '#a65628')) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ylim(0,300)
+```
+
