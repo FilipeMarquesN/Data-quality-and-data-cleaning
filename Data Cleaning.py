@@ -167,7 +167,8 @@ def start():
     countryData, leadershipData, sportData = dataImporting("countryData.xlsx", "leadershipData.csv", "sportData.csv")
     leadershipData, countryData = removeNotOlympicCountries(sportData, leadershipData, countryData)
     leadershipData, countryData = removeNotOlympicYear(sportData, leadershipData, countryData)
-    countriesWithMostMedals(sportData)
+    #countriesWithMostMedals(sportData)
+    tokenizeDataset(sportData,leadershipData,countryData)
 
 
 
@@ -180,12 +181,33 @@ def countriesWithMostMedals(sportData):
     female_data = data_2016[data_2016['Sex'] == 'F']
     
     
-    female_counts = female_data.groupby('Team').size().reset_index(name='Female Count')
-    female_counts = female_counts[female_counts['Female Count'] > 10]
-    female_counts = female_counts.sort_values(by='Female Count', ascending=False)
-    sns.barplot(data=female_counts, x='Female Count', y='Team', orient='h')
-
+   # female_counts = female_data.groupby('Team').size().reset_index(name='Female Count')
+  #  female_counts = female_counts[female_counts['Female Count'] > 10]
+ #   female_counts = female_counts.sort_values(by='Female Count', ascending=False)
+#    sns.barplot(data=female_counts, x='Female Count', y='Team', orient='h')
+    
     plt.yticks(fontsize=4)
     plt.show()
+
+
+def tokenize(row):
+    country = str(row.get('Country', row.get('Team', row.get('country', row.get('country_name', '')))))  
+    year = str(row.get('Year', row.get('year', '')))  
+    country_token = country[:4] if len(country) >= 4 else country
+    year_token = year[:4]
+    return country_token + year_token
+
+
+def tokenizeDataset(sportData, leadershipData, countryData):
+
+    sportData['Token'] = sportData.apply(tokenize, axis=1)
+    countryData['Token'] = countryData.apply(tokenize, axis=1)
+    leadershipData['Token'] = leadershipData.apply(tokenize, axis=1)
+    blockedGroup = sportData.groupby('Token')
+
+    for key, group in blockedGroup:
+        print(f"\nBlock: {key}")
+        print(group)
+
 
 start()
